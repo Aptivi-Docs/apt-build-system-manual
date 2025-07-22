@@ -9,5 +9,5 @@
 
 ***
 
-* [Report an issue](https://github.com/Aptivi/tools/issues/new/choose)
-* [Source code](https://github.com/Aptivi/tools)
+* [Report an issue](https://gitlab.com/aptivi/main/tools/-/issues)
+* [Source code](https://gitlab.com/aptivi/main/tools)
