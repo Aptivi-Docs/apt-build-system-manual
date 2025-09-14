@@ -11,8 +11,8 @@ To get started with a very minimal C# application with just building and cleanin
 
 1. Follow the steps to create a minimal C# application [here](https://learn.microsoft.com/en-us/dotnet/core/tutorials/with-visual-studio-code). Let's assume that the root C# application name is `NewApp`.
 2. Open the terminal by going to **Terminal** > **New Terminal** (or press the <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>\`</kbd> keys)
-3. Execute the `git clone https://gitlab.com/aptivi/main/tools` command
-   1. If you've initialized the Git repository for your project, you'll have to clone it as a submodule inside the root directory of your project using the `git submodule add https://gitlab.com/aptivi/main/tools` command and to push the commit.
+3. Execute the `git clone https://github.com/Aptivi/tools` command
+   1. If you've initialized the Git repository for your project, you'll have to clone it as a submodule inside the root directory of your project using the `git submodule add https://github.com/Aptivi/tools` command and to push the commit.
 4. Create the `vnd` directory
 5. Underneath the `vnd` directory, create three files:
    1. `vendor.sh`: This will store functions that define actions

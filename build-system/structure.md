@@ -35,6 +35,7 @@ The following structure is required for every project that uses this build tools
     * `vendor-clean.cmd` (file, list of commands for cleanup for Windows)
     * `vendor-docgen.cmd` (file, list of commands for documentation generation for Windows)
     * `vendor-docpack.cmd` (file, list of commands for documentation packing for Windows)
+    * `vendor-increment.cmd` (file, list of commands for version incrementation for Windows)
     * `vendor-localize.cmd` (file, list of commands for dependency vendoring for Windows)
     * `vendor-pack.cmd` (file, list of commands for artifact packing for Windows)
     * `vendor-push.cmd` (file, list of commands for pushing to package registry for Windows)
