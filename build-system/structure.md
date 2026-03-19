@@ -7,54 +7,61 @@ icon: trowel-bricks
 
 Our build and pack system follows the structure that is outlined below to give you the ability to create a powerful build system for your projects to ensure that you provide developers short commands to build the project and to simplify the complicated build operations.
 
-The following structure is required for every project that uses this build toolset:
+***
 
-* Project directory
-  * `tools` (directory, cloned as a git submodule)
-    * `build.cmd` (file, Build script for Windows)
-    * `build.sh` (file, Build script for Linux and macOS)
-    * `clean.cmd` (file, Clean script for Windows)
-    * `clean.sh` (file, Clean script for Linux and macOS)
-    * `common.cmd` (file, Common script for Windows, used by all scripts)
-    * `common.sh` (file, Common script for Linux and macOS, used by all scripts)
-    * `docgen.cmd` (file, Documentation generation script for Windows)
-    * `docgen.sh` (file, Documentation generation script for Linux and macOS)
-    * `docgen-pack.cmd` (file, Documentation packing script for Windows)
-    * `docgen-pack.sh` (file, Documentation packing script for Linux and macOS)
-    * `increment.cmd` (file, Version incrementation script for Windows)
-    * `increment.sh` (file, Version incrementation script for Linux and macOS)
-    * `localize.cmd` (file, Dependency vendoring script for Windows)
-    * `localize.sh` (file, Dependency vendoring script for Linux and macOS)
-    * `pack.cmd` (file, Artifact packing script for Windows)
-    * `pack.sh` (file, Artifact packing script for Linux and macOS)
-    * `push.cmd` (file, Artifact pushing script for Windows)
-    * `push.sh` (file, Artifact pushing script for Linux and macOS)
-  * `vnd` (directory, you'll have to create the below files and this directory yourself)
-    * `vendor.sh` (file, vendor script for Linux and macOS)
-    * `vendor-build.cmd` (file, list of commands for build for Windows)
-    * `vendor-clean.cmd` (file, list of commands for cleanup for Windows)
-    * `vendor-docgen.cmd` (file, list of commands for documentation generation for Windows)
-    * `vendor-docpack.cmd` (file, list of commands for documentation packing for Windows)
-    * `vendor-increment.cmd` (file, list of commands for version incrementation for Windows)
-    * `vendor-localize.cmd` (file, list of commands for dependency vendoring for Windows)
-    * `vendor-pack.cmd` (file, list of commands for artifact packing for Windows)
-    * `vendor-push.cmd` (file, list of commands for pushing to package registry for Windows)
+## <mark style="color:$primary;">Script structure</mark>
 
-For Windows scripts, you can optionally add new files that have a prefix of either `vendor-pre` or `vendor-post` for all actions, such as `vendor-prebuild.cmd` for pre-build actions, or `vendor-postpack.cmd` for post-pack actions.
+The below structure is required for every project that uses this build toolset. Select the directory to get a list of the required filesystem hierarchy.
 
 {% hint style="info" %}
-Dependency vendoring may be required for offline builds, especially .NET projects that use NuGet to fetch their dependencies. In this case, you'll have to implement the `localize` function.
+How the project calls the build scripts is entirely up to the project and not to a standard Makefile that makes use of those scripts found in the tools directory.
 {% endhint %}
 
-How the project calls the build scripts is entirely up to the project and not to a standard Makefile that makes use of those scripts found in the tools directory.
+{% tabs %}
+{% tab title="Tools directory" %}
+You'll need to either clone `tools` as a submodule or as a git repository.
 
-### Vendor scripts
+| File name                          | Description                                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `build.cmd / build.sh`             | Build script that builds a project.                                                                                      |
+| `clean.cmd / clean.sh`             | Clean script that cleans a project source.                                                                               |
+| `common.cmd / common.sh`           | Common script to help the individual scripts execute the vendor script.                                                  |
+| `docgen.cmd / docgen.sh`           | Documentation generation script that generates the project docs folder.                                                  |
+| `docgen-pack.cmd / docgen-pack.sh` | Documentation packing script that creates a compressed file from the project docs folder for distribution.               |
+| `increment.cmd / increment.sh`     | Version incrementation script that finds all files that contain the project version and replaces the version.            |
+| `localize.cmd / localize.sh`       | Dependency vendoring script that downloads all project dependencies and configures the build system to use them locally. |
+| `pack.cmd / pack.sh`               | Artifact packing script that creates a compressed file from the project output directory containing final binaries.      |
+| `push.cmd / push.cmd`              | Artifact pushing script that publishes the project's final binaries online.                                              |
+{% endtab %}
 
-The following vendor scripts are provided for both Windows and Unix-based operating systems, such as macOS:
+{% tab title="Vendor directory" %}
+You'll need to create a `vnd` directory with any of the vendor script files, as desired:
 
-#### Windows
+| File name             | Description                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| `vendor.sh`           | Vendor script for Linux containing all functions and commands for different build actions. |
+| `vendor-build.sh`     | Vendor build script executed from the tool's script.                                       |
+| `vendor-clean.sh`     | Vendor clean script executed from the tool's script.                                       |
+| `vendor-docgen.sh`    | Vendor docs generation script executed from the tool's script.                             |
+| `vendor-docpack.sh`   | Vendor docs packing script executed from the tool's script.                                |
+| `vendor-increment.sh` | Vendor version incrementation script executed from the tool's script.                      |
+| `vendor-localize.sh`  | Vendor dependency vendoring script executed from the tool's script.                        |
+| `vendor-pack.sh`      | Vendor packing script executed from the tool's script.                                     |
+| `vendor-push.cmd`     | Vendor pushing script executed from the tool's script.                                     |
+{% endtab %}
+{% endtabs %}
 
-For Windows systems, you'll have to create the vendor batch files as mentioned underneath the `vnd` directory as needed. For example, if you don't want to push anything to the package registry, you can omit the `vendor-push.cmd` file and the base push script, `push.cmd`, will not see it.
+***
+
+## <mark style="color:$primary;">Vendor scripts</mark>
+
+The vendor script creation instructions are provided for both Windows and Unix-based operating systems, such as macOS. Select your operating system below:
+
+<details>
+
+<summary>Windows</summary>
+
+You'll have to create the vendor batch files as mentioned underneath the `vnd` directory as needed. For example, if you don't want to push anything to the package registry, you can omit the `vendor-push.cmd` file and the base push script, `push.cmd`, will not see it.
 
 When an error occurs, store the error code value, print a helpful error message, then exit with the same error code. For example, BassBoom's `vendor-push.cmd` uses the following statements to stop pushing the rest of the packages upon encountering any error:
 
@@ -103,7 +110,18 @@ echo Building with configuration %releaseconfig%...
 You can process the arguments as usual, because the scripts found in the `tools` directory handle the arguments to customize the build further by the end developer. Just follow the instructions on how to get the arguments.
 {% endhint %}
 
-#### Linux/macOS
+### <mark style="color:$primary;">Commands before and after action</mark>
+
+For Windows scripts, you can optionally add new files that have a prefix of either `vendor-pre` or `vendor-post` for all actions. The following examples are:
+
+* `vendor-prebuild.cmd` for pre-build actions
+* `vendor-postpack.cmd` for post-pack actions
+
+</details>
+
+<details>
+
+<summary>Linux/macOS</summary>
 
 For Linux and macOS systems, you'll have to create a single executable Bash script, called `vendor.sh` under the `vnd` folder. This is meant to be only sourced and not to be executed. It contains only the function definitions that can be omitted:
 
@@ -116,17 +134,15 @@ For Linux and macOS systems, you'll have to create a single executable Bash scri
 * `packall()`
 * `pushall()`
 
-{% hint style="info" %}
-For Linux scripts, you can optionally add new functions that have a prefix of either `pre` or `post` for all actions, such as `prebuild()` for pre-build actions, or `postpack()` for post-pack actions.
-{% endhint %}
-
 If a function has been omitted, they will be defined as a void function that immediately returns `0`, which means success. Those functions, therefore, will not be executed. Inside them, you can define what commands you can run.
 
+{% hint style="info" %}
 The best practice for making vendor scripts in Linux is to follow the below rules:
 
 * For critical errors, you can use the `checkerror` function directly after the command to be executed that may throw such errors, such as dependencies.
 * For continuable errors, you can use the `checkvendorerror` function directly after the command to be executed that may throw such errors, such as download errors.
 * You can use the `$ROOTDIR` variable to get a path to the repository root, that is, the parent directory of the vendor script directory, `vnd`.
+{% endhint %}
 
 Afterwards, you can define the functions inside the `vendor.sh` file:
 
@@ -174,3 +190,12 @@ You can process the arguments as usual, because the scripts found in the `tools`
 {% hint style="warning" %}
 Beware that the vendor script should contain the shebang at the top of the script.
 {% endhint %}
+
+### <mark style="color:$primary;">Commands before and after action</mark>
+
+For Unix scripts in `vendor.sh`, you can add new functions that have a prefix of either `pre` or `post` for all actions. The following examples are:
+
+* `prebuild()` for pre-build actions
+* `postpackall()` for post-pack actions
+
+</details>
